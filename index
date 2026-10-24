@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashcard LCT Matematika Kelas 4–6</title>
+<style>
+:root{--ink:#172554;--muted:#64748b;--blue:#2563eb;--purple:#7c3aed;--bg:#f4f7ff;--line:#dbe4f0}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:linear-gradient(135deg,#eef4ff,#f8f5ff 55%,#eefbf8);color:var(--ink);min-height:100vh}
+.wrap{max-width:980px;margin:auto;padding:24px 16px 48px}
+header{text-align:center;margin:8px auto 22px}
+.kicker{display:inline-block;background:#dbeafe;color:#1d4ed8;border-radius:999px;padding:6px 12px;font-weight:700;font-size:.8rem;letter-spacing:.03em}
+h1{font-size:clamp(1.7rem,4vw,2.7rem);margin:12px 0 8px;line-height:1.12}
+header p{margin:0 auto;color:var(--muted);max-width:650px;line-height:1.55}
+.toolbar{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0}
+select,input{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:12px;background:white;color:var(--ink);font:inherit;outline:none}
+select:focus,input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2563eb1c}
+.stats{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:.92rem;margin:10px 2px}
+.progress{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin:8px 0 18px}
+.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--purple));transition:width .2s}
+.card-area{perspective:1200px;max-width:720px;margin:0 auto}
+.flashcard{position:relative;width:100%;min-height:320px;cursor:pointer;transform-style:preserve-3d;transition:transform .55s;border-radius:26px;outline:none}
+.flashcard.flipped{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;min-height:320px;border-radius:26px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px 24px;box-shadow:0 18px 45px #253b6520;border:1px solid #ffffffa8}
+.front{background:linear-gradient(145deg,#ffffff,#eaf1ff)}
+.back{background:linear-gradient(145deg,#f0fdf4,#d9fbe8);transform:rotateY(180deg)}
+.label{font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;font-weight:800;color:#64748b;margin-bottom:22px}
+.face h2{font-size:clamp(1.35rem,3vw,2rem);line-height:1.35;margin:0;max-width:590px;white-space:pre-line}
+.back h2{font-size:clamp(1.12rem,2.5vw,1.55rem);font-weight:650}
+.hint{position:absolute;bottom:18px;font-size:.82rem;color:#64748b}
+.controls{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:20px 0}
+button{border:0;border-radius:12px;padding:12px 17px;font:inherit;font-weight:750;cursor:pointer;transition:transform .12s,filter .12s}
+button:active{transform:scale(.97)}
+.primary{background:var(--blue);color:white;box-shadow:0 6px 14px #2563eb30}
+.secondary{background:white;color:var(--ink);border:1px solid var(--line)}
+.know{background:#dcfce7;color:#166534}.again{background:#ffedd5;color:#9a3412}
+button:focus-visible{outline:3px solid #93c5fd;outline-offset:2px}
+.count{min-width:82px;text-align:center;font-weight:800}
+.note{text-align:center;color:var(--muted);font-size:.9rem;line-height:1.5}
+.score-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:720px;margin:18px auto}
+.score{background:#ffffffc9;border:1px solid var(--line);border-radius:15px;padding:14px;text-align:center}
+.score strong{display:block;font-size:1.4rem}.score small{color:var(--muted)}
+.list{max-width:720px;margin:28px auto 0;background:#ffffffc9;border:1px solid var(--line);border-radius:18px;padding:16px}
+.list summary{font-weight:800;cursor:pointer}
+.list p{margin:12px 0;color:var(--muted);font-size:.9rem}
+.list-items{display:grid;gap:8px;margin-top:12px}
+.list-item{background:white;border:1px solid var(--line);padding:12px;border-radius:12px}
+.list-item strong{display:block;margin-bottom:5px}.list-item span{color:#166534}
+footer{text-align:center;color:var(--muted);font-size:.82rem;margin-top:28px}
+@media(max-width:600px){.wrap{padding:18px 12px 32px}.toolbar{grid-template-columns:1fr}.flashcard,.face{min-height:300px}.face{padding:24px 18px}.controls button{padding:11px 13px}.score-row{gap:8px}}
+@media(prefers-reduced-motion:reduce){.flashcard,.progress span{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="kicker">BELAJAR • BALIK KARTU • LATIHAN</span>
+  <h1>Flashcard LCT Matematika</h1>
+  <p>Kelas 4–6 SD · Bilangan, pecahan, pengukuran, geometri, pola & aljabar, data, dan peluang.</p>
+</header>
+<div class="toolbar">
+  <select id="category" aria-label="Pilih kategori">
+    <option value="Semua">Semua materi</option>
+    <option>Bilangan & Operasi Hitung</option>
+    <option>Pecahan & Perbandingan</option>
+    <option>Pengukuran</option>
+    <option>Geometri</option>
+    <option>Pola & Aljabar</option>
+    <option>Data & Peluang</option>
+  </select>
+  <input id="search" type="search" placeholder="Cari materi atau kata kunci…" aria-label="Cari kartu">
+</div>
+<div class="stats"><span id="categoryCount">64 kartu</span><span id="position">Kartu 1 dari 64</span></div>
+<div class="progress" aria-label="Kemajuan kartu"><span id="progressBar"></span></div>
+<div class="card-area">
+  <div class="flashcard" id="flashcard" tabindex="0" role="button" aria-label="Balik kartu untuk melihat jawaban">
+    <div class="face front"><div class="label" id="frontLabel">PERTANYAAN</div><h2 id="frontText"></h2><div class="hint">Klik / tap kartu untuk membalik</div></div>
+    <div class="face back"><div class="label">JAWABAN & PENJELASAN</div><h2 id="backText"></h2><div class="hint">Klik / tap untuk kembali ke pertanyaan</div></div>
+  </div>
+</div>
+<div class="controls">
+  <button class="secondary" id="prev">← Sebelumnya</button>
+  <button class="primary" id="flip">Lihat jawaban ↻</button>
+  <button class="secondary" id="next">Berikutnya →</button>
+</div>
+<div class="controls">
+  <button class="again" id="missed">× Perlu latihan</button>
+  <button class="know" id="known">✓ Sudah paham</button>
+  <button class="secondary" id="shuffle">Acak kartu ⤨</button>
+  <button class="secondary" id="reset">Reset tanda</button>
+</div>
+<div class="score-row">
+  <div class="score"><strong id="knownCount">0</strong><small>Sudah paham ✓</small></div>
+  <div class="score"><strong id="missedCount">0</strong><small>Perlu latihan ×</small></div>
+</div>
+<p class="note">Tip: jawab pertanyaan sebelum membalik kartu. Tandai ✓ atau × agar kamu tahu materi yang perlu diulang.</p>
+<details class="list">
+  <summary>Lihat daftar seluruh kartu dan jawabannya</summary>
+  <p>Gunakan daftar ini untuk mengulang materi atau memilih topik latihan.</p>
+  <div class="list-items" id="allCards"></div>
+</details>
+<footer>Flashcard interaktif untuk persiapan LCT Matematika · Bisa dibuka di HP maupun laptop.</footer>
+</div>
+<script>
+const cards = [
+{c:"Bilangan & Operasi Hitung",q:"Apa arti 6 × 7?",a:"6 kelompok berisi 7 benda. Hasilnya 42."},
+{c:"Bilangan & Operasi Hitung",q:"Berapa hasil 8 × 9?",a:"72. Cara cepat: 8 × 10 − 8 = 72."},
+{c:"Bilangan & Operasi Hitung",q:"Berapa hasil 144 ÷ 12?",a:"12, karena 12 × 12 = 144."},
+{c:"Bilangan & Operasi Hitung",q:"Berapa hasil 25 × 16?",a:"400. Cara cepat: 25 × 4 × 4 = 100 × 4 = 400."},
+{c:"Bilangan & Operasi Hitung",q:"Berapa hasil 120 − 4 × 15?",a:"60. Kerjakan perkalian dahulu: 120 − 60 = 60."},
+{c:"Pecahan & Perbandingan",q:"Apa itu pecahan senilai?",a:"Pecahan yang nilainya sama, misalnya 1/2 = 2/4."},
+{c:"Pecahan & Perbandingan",q:"Berapa hasil 1/2 + 1/4?",a:"3/4. Samakan penyebut: 2/4 + 1/4 = 3/4."},
+{c:"Pecahan & Perbandingan",q:"Ubah 0,75 menjadi pecahan!",a:"0,75 = 75/100 = 3/4 setelah disederhanakan."},
+{c:"Pecahan & Perbandingan",q:"Perbandingan 2 : 3 berarti apa?",a:"Setiap 2 bagian pertama dibandingkan dengan 3 bagian kedua."},
+{c:"Pengukuran",q:"Berapa 2 meter dalam sentimeter?",a:"200 cm, karena 1 meter = 100 cm."},
+{c:"Pengukuran",q:"Berapa 3 kg dalam gram?",a:"3.000 gram, karena 1 kg = 1.000 gram."},
+{c:"Pengukuran",q:"Berapa menit dalam 2 jam 30 menit?",a:"150 menit. 2 × 60 + 30 = 150."},
+{c:"Geometri",q:"Bagaimana menghitung keliling persegi?",a:"Keliling = 4 × sisi. Jika sisi 5 cm, kelilingnya 20 cm."},
+{c:"Geometri",q:"Bagaimana menghitung luas persegi panjang?",a:"Luas = panjang × lebar. Hasilnya dalam satuan persegi."},
+{c:"Geometri",q:"Apa itu volume kubus?",a:"Volume = sisi × sisi × sisi. Jika sisi 3 cm, volumenya 27 cm³."},
+{c:"Geometri",q:"Apa itu simetri lipat?",a:"Garis yang membagi bangun menjadi dua bagian yang saling menutupi tepat."},
+{c:"Pola & Aljabar",q:"Apa aturan pola 3, 6, 9, 12, …?",a:"Bertambah 3 setiap langkah. Bilangan berikutnya adalah 15."},
+{c:"Pola & Aljabar",q:"Apa bilangan berikutnya: 2, 4, 8, 16, …?",a:"32. Setiap bilangan dikalikan 2."},
+{c:"Pola & Aljabar",q:"Jika x + 8 = 20, berapa x?",a:"x = 12, karena 20 − 8 = 12."},
+{c:"Pola & Aljabar",q:"Apa itu variabel dalam matematika?",a:"Simbol, seperti x atau n, yang mewakili suatu nilai."},
+{c:"Data & Peluang",q:"Pada diagram batang, apa arti batang lebih tinggi?",a:"Nilai atau frekuensi kategori tersebut lebih besar."},
+{c:"Data & Peluang",q:"Apa fungsi tabel data?",a:"Menyusun informasi secara teratur agar mudah dibaca dan dibandingkan."},
+{c:"Data & Peluang",q:"Apa itu peluang suatu kejadian?",a:"Ukuran kemungkinan kejadian terjadi. Peluang bernilai dari 0 sampai 1."},
+{c:"Data & Peluang",q:"Koin dilempar sekali. Apa peluang muncul gambar?",a:"1/2 atau 50%, jika koin seimbang."},
+{c:"Pola & Aljabar",q:"Apa perbedaan variabel dan konstanta?",a:"Variabel adalah lambang nilai yang dapat berubah; konstanta adalah nilai tetap."},
+{c:"Pola & Aljabar",q:"Apa arti 3x?",a:"3x berarti 3 dikalikan x, bukan 3 ditambah x."},
+{c:"Pola & Aljabar",q:"Jika x = 5, berapa 2x + 3?",a:"2(5) + 3 = 13. Ganti x dengan 5."},
+{c:"Pola & Aljabar",q:"Sederhanakan 4x + 2x!",a:"6x. Gabungkan suku sejenis: 4x + 2x = 6x."},
+{c:"Pola & Aljabar",q:"Sederhanakan 7a − 3a + 2!",a:"4a + 2. Gabungkan suku yang memiliki variabel sama."},
+{c:"Pola & Aljabar",q:"Sederhanakan 3x + 4 + 2x + 1!",a:"5x + 5. Gabungkan suku x dan bilangan tetap."},
+{c:"Pola & Aljabar",q:"Jika x − 7 = 15, berapa x?",a:"x = 22. Tambahkan 7 pada kedua ruas."},
+{c:"Pola & Aljabar",q:"Jika 4x = 28, berapa x?",a:"x = 7. Bagi kedua ruas dengan 4."},
+{c:"Pola & Aljabar",q:"Jika x ÷ 5 = 6, berapa x?",a:"x = 30. Kalikan kedua ruas dengan 5."},
+{c:"Pola & Aljabar",q:"Jika 2x + 3 = 13, berapa x?",a:"x = 5. Kurangi 3, lalu bagi 2: 10 ÷ 2 = 5."},
+{c:"Pola & Aljabar",q:"Jika 3x − 4 = 17, berapa x?",a:"x = 7. Tambahkan 4, lalu bagi 3."},
+{c:"Pola & Aljabar",q:"Tuliskan kalimat: suatu bilangan ditambah 8 sama dengan 20!",a:"x + 8 = 20, dengan x menyatakan bilangan tersebut."},
+{c:"Pola & Aljabar",q:"Tuliskan kalimat: lima kali suatu bilangan adalah 35!",a:"5x = 35. Bilangan itu adalah 7."},
+{c:"Pola & Aljabar",q:"Umur Ani x tahun. Berapa umur Ani 4 tahun lagi?",a:"x + 4 tahun."},
+{c:"Pola & Aljabar",q:"Panjang persegi panjang x cm, lebarnya 3 cm. Berapa kelilingnya?",a:"K = 2(x + 3) = 2x + 6 cm."},
+{c:"Pola & Aljabar",q:"Apa aturan pola 5, 8, 11, 14, …?",a:"Bertambah 3 setiap langkah. Bilangan berikutnya 17."},
+{c:"Pola & Aljabar",q:"Apa aturan pola 30, 25, 20, 15, …?",a:"Berkurang 5 setiap langkah. Bilangan berikutnya 10."},
+{c:"Pola & Aljabar",q:"Apa bilangan berikutnya: 1, 4, 9, 16, …?",a:"25. Polanya bilangan kuadrat: 1², 2², 3², 4², 5²."},
+{c:"Pola & Aljabar",q:"Apa bilangan berikutnya: 2, 5, 10, 17, …?",a:"26. Selisihnya 3, 5, 7, lalu 9."},
+{c:"Pola & Aljabar",q:"Bagaimana menentukan aturan pola bilangan?",a:"Bandingkan suku berurutan, cari selisih atau rasio, lalu uji aturan pada suku berikutnya."},
+{c:"Pola & Aljabar",q:"Pola 4, 7, 10, 13, … Suku ke-6 berapa?",a:"19. Tambahkan 3 setiap langkah: 4, 7, 10, 13, 16, 19."},
+{c:"Pola & Aljabar",q:"Jika 1 buku berharga Rp4.000, berapa harga n buku?",a:"4.000n rupiah."},
+{c:"Pola & Aljabar",q:"Jika x = 4 dan y = 3, berapa x + 2y?",a:"4 + 2(3) = 10."},
+{c:"Pola & Aljabar",q:"Apakah 3x + 2x sama dengan 5x?",a:"Ya. Keduanya suku sejenis sehingga koefisiennya dapat dijumlahkan."},
+{c:"Pola & Aljabar",q:"Apakah 3x + 2 sama dengan 5x?",a:"Tidak. 3x dan 2 bukan suku sejenis sehingga tidak dapat digabungkan."},
+{c:"Pola & Aljabar",q:"Apa sifat distributif?",a:"a(b + c) = ab + ac. Contoh: 3(4 + 2) = 12 + 6 = 18."},
+{c:"Pola & Aljabar",q:"Sederhanakan 2(x + 5)!",a:"2x + 10. Kalikan 2 dengan setiap suku di dalam kurung."},
+{c:"Bilangan & Operasi Hitung",q:"Berapa hasil 48 ÷ 6 × 2?",a:"16. Pembagian dan perkalian dikerjakan dari kiri ke kanan."},
+{c:"Bilangan & Operasi Hitung",q:"Berapa hasil 5 + 3 × 4?",a:"17. Kerjakan perkalian dahulu: 5 + 12 = 17."},
+{c:"Pecahan & Perbandingan",q:"Berapa hasil 2/3 + 1/6?",a:"5/6. Ubah 2/3 menjadi 4/6, lalu jumlahkan."},
+{c:"Pecahan & Perbandingan",q:"Berapa hasil 3/4 × 8?",a:"6. Hitung 8 ÷ 4 × 3 = 6."},
+{c:"Pecahan & Perbandingan",q:"Berapa hasil 2,5 + 1,75?",a:"4,25. Sejajarkan tanda koma saat menjumlahkan."},
+{c:"Pecahan & Perbandingan",q:"Jika 3 pensil berharga Rp6.000, berapa harga 5 pensil?",a:"Rp10.000. Harga satu pensil Rp2.000, lalu kalikan 5."},
+{c:"Geometri",q:"Luas segitiga dengan alas 10 cm dan tinggi 6 cm?",a:"½ × 10 × 6 = 30 cm²."},
+{c:"Geometri",q:"Keliling persegi dengan sisi 12 cm?",a:"4 × 12 = 48 cm."},
+{c:"Geometri",q:"Volume balok berukuran 4 × 3 × 5 cm?",a:"4 × 3 × 5 = 60 cm³."},
+{c:"Pengukuran",q:"Berapa lama dari pukul 08.35 sampai 10.10?",a:"1 jam 35 menit."},
+{c:"Data & Peluang",q:"Data 4, 6, 6, 8. Berapa mediannya?",a:"6. Dua nilai tengahnya 6 dan 6; rata-ratanya 6."},
+{c:"Data & Peluang",q:"Dalam kantong ada 3 bola merah dan 2 biru. Peluang mengambil merah?",a:"3/5, jika setiap bola memiliki peluang terambil yang sama."},
+{c:"Pola & Aljabar",q:"Bagaimana mengenali pola gambar yang berulang?",a:"Cari bagian gambar yang berulang, lalu hitung pertambahan atau urutan bentuk pada setiap langkah."}
+];
+let deck=[...cards], index=0, flipped=false;
+const known=new Set(), missed=new Set();
+const $=id=>document.getElementById(id);
+function filtered(){const cat=$("category").value, term=$("search").value.trim().toLowerCase();return deck.filter(x=>(cat==="Semua"||x.c===cat)&&(!term||(x.q+" "+x.a+" "+x.c).toLowerCase().includes(term)))}
+function render(){
+ const arr=filtered();
+ if(index>=arr.length)index=Math.max(0,arr.length-1);
+ $("categoryCount").textContent=arr.length+" kartu";
+ $("position").textContent=arr.length?`Kartu ${index+1} dari ${arr.length}`:"Tidak ada kartu yang cocok";
+ $("progressBar").style.width=arr.length?`${((index+1)/arr.length)*100}%`:"0%";
+ $("knownCount").textContent=known.size;$("missedCount").textContent=missed.size;
+ const card=arr[index];
+ if(!card){$("frontText").textContent="Kartu tidak ditemukan";$("backText").textContent="Coba kata kunci atau kategori lain."; $("flashcard").classList.remove("flipped");flipped=false;return}
+ $("frontText").textContent=card.q;$("backText").textContent=card.a;$("frontLabel").textContent=card.c.toUpperCase();
+ $("flashcard").classList.toggle("flipped",flipped);
+ $("known").textContent=known.has(card.q)?"✓ Sudah paham (ditandai)":"✓ Sudah paham";
+ $("missed").textContent=missed.has(card.q)?"× Perlu latihan (ditandai)":"× Perlu latihan";
+ renderList(arr);
+}
+function flip(){if(filtered().length){flipped=!flipped;$("flashcard").classList.toggle("flipped",flipped)}}
+function move(n){const arr=filtered();if(!arr.length)return;index=(index+n+arr.length)%arr.length;flipped=false;render()}
+function mark(type){const arr=filtered(),card=arr[index];if(!card)return;known.delete(card.q);missed.delete(card.q);(type==="known"?known:missed).add(card.q);move(1)}
+function renderList(arr){$("allCards").innerHTML=arr.map((x,i)=>`<div class="list-item"><strong>${i+1}. ${escapeHtml(x.q)}</strong><span>${escapeHtml(x.a)}</span><small style="display:block;color:#64748b;margin-top:5px">${escapeHtml(x.c)}</small></div>`).join("")}
+function escapeHtml(s){return s.replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]))}
+$("flashcard").addEventListener("click",flip);$("flashcard").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();flip()}});
+$("flip").addEventListener("click",flip);$("prev").addEventListener("click",()=>move(-1));$("next").addEventListener("click",()=>move(1));
+$("known").addEventListener("click",()=>mark("known"));$("missed").addEventListener("click",()=>mark("missed"));
+$("category").addEventListener("change",()=>{index=0;flipped=false;render()});$("search").addEventListener("input",()=>{index=0;flipped=false;render()});
+$("shuffle").addEventListener("click",()=>{for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]]}index=0;flipped=false;render()});
+$("reset").addEventListener("click",()=>{known.clear();missed.clear();render()});
+document.addEventListener("keydown",e=>{if(e.key==="ArrowRight")move(1);if(e.key==="ArrowLeft")move(-1);if(e.key===" "&&document.activeElement.tagName!=="INPUT"&&document.activeElement.tagName!=="SELECT"){e.preventDefault();flip()}});
+render();
+</script>
+</body>
+</html>
